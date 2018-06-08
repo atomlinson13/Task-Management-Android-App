@@ -10,15 +10,14 @@
 
         android:id="@+id/list"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-
-        />
+        android:layout_height="wrap_content" />
 
     <TextView
 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_tasks" />
+        android:text="@string/title_tasks"
+        android:layout_marginTop="55dp" />
 
 
 </LinearLayout>

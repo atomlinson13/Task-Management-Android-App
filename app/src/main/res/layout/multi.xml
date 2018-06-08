@@ -15,15 +15,10 @@
 -->
 
 <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeightSmall"
-    android:background="@drawable/common_google_signin_btn_icon_dark"
     android:checkMark="?android:attr/listChoiceIndicatorMultiple"
     android:checked="false"
-    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-    android:textAlignment="gravity"
-    android:gravity="left"
-    android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+    android:textAppearance="?android:attr/textAppearanceListItem"
+    android:layoutDirection="rtl" />
