@@ -3,6 +3,7 @@ package com.example.t00014961.taskapplication;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -35,13 +36,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -49,7 +55,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
-    private FirebaseAuth mAuth;
+    public FirebaseAuth mAuth;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -73,11 +79,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private GoogleSignInClient mGoogleSignInClient;
+    private static final String TAG = "GoogleActivity";
+    private static final int RC_SIGN_IN = 9001;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -316,14 +326,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
+    public class UserLoginTask extends com.example.t00014961.taskapplication.UserLoginTask {
 
         UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
+            super(email, password);
         }
 
         @Override
@@ -367,6 +373,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+          //  super.onActivityResult(requestCode, resultCode, data);
+
+            // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+            if (requestCode == RC_SIGN_IN) {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                try {
+                    // Google Sign In was successful, authenticate with Firebase
+                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                    firebaseAuthWithGoogle(account);
+                } catch (ApiException e) {
+                    // Google Sign In failed, update UI appropriately
+                    Log.w(TAG, "Google sign in failed", e);
+                    // ...
+                }
+            }
+        }
+
+
     }
 }
 
